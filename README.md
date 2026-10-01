@@ -37,14 +37,21 @@ Cada ponto de quebra está justificado nos comentários do notebook (seção 3).
 
 ### Base de regras
 
-São 27 regras, uma para cada combinação de termos das três entradas (3 × 3 × 3). A cobertura
-completa é verificada por `assert` no próprio notebook. A base segue três princípios:
+São 9 regras linguísticas, no estilo "SE folga É ESTOURA ENTÃO adequação É BAIXA", com regras de
+um só antecedente e termos ligados por OU. Elas fatoram uma tabela com as 27 combinações de
+termos das três entradas (3 × 3 × 3), que fica no notebook como especificação: um `assert`
+verifica que as 9 regras cobrem as 27 combinações sem lacuna nem conflito e dão a mesma saída da
+tabela em cada uma. A base segue três princípios:
 
 1. **O tempo é restrição dura.** Com `folga = estoura`, a adequação é `baixa`, qualquer que
-   seja a nota.
+   seja a nota (R1).
 2. **Nota fraca não se recupera.** Um filme mal avaliado sai `baixa` mesmo cabendo bem e tendo
-   muitos votos.
-3. **Consenso modula, não decide.** Poucos votos rebaixam a adequação em no máximo um nível.
+   muitos votos (R2).
+3. **Consenso modula, não decide.** Poucos votos rebaixam a adequação em no máximo um nível
+   (R3 e R6).
+
+Como em Mamdani não existe veto, todas as regras que concluem `media` ou `alta` exigem folga
+justa ou sobra; assim nenhuma delas compete com a R1 quando o filme não cabe.
 
 A inferência é Mamdani: implicação por mínimo, agregação por máximo e defuzzificação por
 centroide.
@@ -74,6 +81,10 @@ pip install scikit-fuzzy numpy scipy networkx packaging matplotlib requests jupy
 jupyter notebook Cinefilo_Fuzzy.ipynb
 ```
 
+Antes de executar, confira se o kernel do notebook é o Python do `.venv` criado acima. No
+Jupyter, use **Kernel → Change Kernel**; no VS Code, abra o notebook, clique em **Select Kernel**
+(canto superior direito) e escolha o ambiente `.venv`.
+
 No Jupyter, use **Run → Run All Cells**. `networkx` e `packaging` aparecem na lista porque o
 scikit-fuzzy 0.5.0 os importa sem declará-los como dependência.
 
@@ -99,7 +110,7 @@ API Key (v3) quanto o Read Access Token (v4). O notebook procura a chave nesta o
 | 1 | Instalação e importações |
 | 2 | Descrição do domínio |
 | 3 | Variáveis linguísticas, funções de pertinência e seus gráficos |
-| 4 | Base de 27 regras e a verificação de cobertura |
+| 4 | Base de 9 regras e a verificação de equivalência com a tabela de 27 combinações |
 | 5 | Inferência com explicação: fuzzificação, regras ativadas e agregação |
 | 6 | Casos de teste comentados e verificações globais |
 | 7 | Superfície de controle |
@@ -111,13 +122,11 @@ API Key (v3) quanto o Read Access Token (v4). O notebook procura a chave nesta o
 | Caso | folga | nota | votos | Adequação | Interpretação |
 |---|---|---|---|---|---|
 | 1. Ideal | +20 min | 8,4 | 12 000 | **8,42** | Aproveita bem a sessão e tem qualidade confirmada |
-| 2. Não cabe | −60 min | 8,4 | 12 000 | **1,58** | Um ótimo filme que estoura a sessão não é recomendado |
+| 2. Não cabe | −60 min | 8,4 | 12 000 | **1,56** | Um ótimo filme que estoura a sessão não é recomendado |
 | 3. Consenso frágil | +20 min | 8,8 | 90 | **5,00** | Nota alta com poucos votos vale menos que nota confirmada |
+| 4. Interpolação | +35 min | 7,2 | 800 | **5,75** | Quatro regras disparam com forças diferentes e o centroide as concilia |
 
-O notebook também traz um caso ambíguo (folga +35, nota 7,2, 800 votos) em que quatro regras
-disparam com forças diferentes e o centroide as concilia, resultando em 5,75.
-
-Pela defuzzificação por centroide, a saída útil vai de cerca de 1,5 a 8,5, e não de 0 a 10.
+Pela defuzzificação por centroide, a saída útil vai de cerca de 1,6 a 8,4, e não de 0 a 10.
 
 ## Licença
 
