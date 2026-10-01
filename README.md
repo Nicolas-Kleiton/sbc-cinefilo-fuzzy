@@ -1,5 +1,13 @@
 # Cinéfilo Fuzzy
 
+ALUNOS: 
+
+Rodrigo Monteiro Fortes de Oliveira
+
+Nicolas Kleiton da Silva Melo
+
+
+
 Controlador fuzzy Mamdani, em [scikit-fuzzy](https://pythonhosted.org/scikit-fuzzy/), que dá uma nota
 de **adequação (0 a 10)** a um filme para uma sessão específica.
 
@@ -20,12 +28,12 @@ Com lógica fuzzy, a transição fica gradual.
 
 ### Variáveis
 
-| Variável | Tipo | Universo | Termos |
-|---|---|---|---|
-| `folga` | entrada | −90 a 120 min (tempo disponível − duração) | `estoura`, `justa`, `sobra` |
-| `nota` | entrada | 0 a 10 (média TMDB) | `fraca`, `media`, `alta` |
-| `consenso` | entrada | 0 a 5000 votos (saturado) | `baixo`, `medio`, `alto` |
-| `adequacao` | saída | 0 a 10 | `baixa`, `media`, `alta` |
+| Variável     | Tipo    | Universo                                        | Termos                            |
+| ------------- | ------- | ----------------------------------------------- | --------------------------------- |
+| `folga`     | entrada | −90 a 120 min (tempo disponível − duração) | `estoura`, `justa`, `sobra` |
+| `nota`      | entrada | 0 a 10 (média TMDB)                            | `fraca`, `media`, `alta`    |
+| `consenso`  | entrada | 0 a 5000 votos (saturado)                       | `baixo`, `medio`, `alto`    |
+| `adequacao` | saída  | 0 a 10                                          | `baixa`, `media`, `alta`    |
 
 - **`folga` não é monotônica.** Se for negativa, o filme não cabe. Pequena e positiva é o ideal.
   Muito grande volta a ser pior, porque a sessão fica subaproveitada.
@@ -105,26 +113,26 @@ API Key (v3) quanto o Read Access Token (v4). O notebook procura a chave nesta o
 
 ## O que o notebook contém
 
-| Seção | Conteúdo |
-|---|---|
-| 1 | Instalação e importações |
-| 2 | Descrição do domínio |
-| 3 | Variáveis linguísticas, funções de pertinência e seus gráficos |
-| 4 | Base de 9 regras e a verificação de equivalência com a tabela de 27 combinações |
-| 5 | Inferência com explicação: fuzzificação, regras ativadas e agregação |
-| 6 | Casos de teste comentados e verificações globais |
-| 7 | Superfície de controle |
-| 8 | Ranqueamento de filmes reais da TMDB (opcional) |
-| 9 | Comparação entre fuzzy e as regras nítidas do MP1 |
+| Seção | Conteúdo                                                                            |
+| ------- | ------------------------------------------------------------------------------------ |
+| 1       | Instalação e importações                                                         |
+| 2       | Descrição do domínio                                                              |
+| 3       | Variáveis linguísticas, funções de pertinência e seus gráficos                 |
+| 4       | Base de 9 regras e a verificação de equivalência com a tabela de 27 combinações |
+| 5       | Inferência com explicação: fuzzificação, regras ativadas e agregação          |
+| 6       | Casos de teste comentados e verificações globais                                   |
+| 7       | Superfície de controle                                                              |
+| 8       | Ranqueamento de filmes reais da TMDB (opcional)                                      |
+| 9       | Comparação entre fuzzy e as regras nítidas do MP1                                 |
 
 ### Casos de teste
 
-| Caso | folga | nota | votos | Adequação | Interpretação |
-|---|---|---|---|---|---|
-| 1. Ideal | +20 min | 8,4 | 12 000 | **8,42** | Aproveita bem a sessão e tem qualidade confirmada |
-| 2. Não cabe | −60 min | 8,4 | 12 000 | **1,56** | Um ótimo filme que estoura a sessão não é recomendado |
-| 3. Consenso frágil | +20 min | 8,8 | 90 | **5,00** | Nota alta com poucos votos vale menos que nota confirmada |
-| 4. Interpolação | +35 min | 7,2 | 800 | **5,75** | Quatro regras disparam com forças diferentes e o centroide as concilia |
+| Caso                | folga    | nota | votos  | Adequação    | Interpretação                                                         |
+| ------------------- | -------- | ---- | ------ | -------------- | ----------------------------------------------------------------------- |
+| 1. Ideal            | +20 min  | 8,4  | 12 000 | **8,42** | Aproveita bem a sessão e tem qualidade confirmada                      |
+| 2. Não cabe        | −60 min | 8,4  | 12 000 | **1,56** | Um ótimo filme que estoura a sessão não é recomendado               |
+| 3. Consenso frágil | +20 min  | 8,8  | 90     | **5,00** | Nota alta com poucos votos vale menos que nota confirmada               |
+| 4. Interpolação   | +35 min  | 7,2  | 800    | **5,75** | Quatro regras disparam com forças diferentes e o centroide as concilia |
 
 Pela defuzzificação por centroide, a saída útil vai de cerca de 1,6 a 8,4, e não de 0 a 10.
 
